@@ -61,6 +61,19 @@ def get_locally_available_models() -> List[str]:
         return []
 
 
+def is_model_available(model_name: str, base_url: str | None = None) -> bool:
+    """Check if a given Ollama model is available."""
+    base_url = base_url or os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    try:
+        response = requests.get(f"{base_url}/api/tags", timeout=5)
+        if response.status_code == 200:
+            models = response.json().get("models", [])
+            return any(m.get("name") == model_name for m in models)
+    except requests.RequestException:
+        pass
+    return False
+
+
 def start_ollama_server() -> bool:
     """Start the Ollama server if it's not already running."""
     if is_ollama_server_running():

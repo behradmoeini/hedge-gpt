@@ -78,17 +78,33 @@ async def run_hedge_fund(request: HedgeFundRequest):
                         pass
 
                 # Get the final result
-                result = run_task.result()
+                try:
+                    result = run_task.result()
+                except RuntimeError as e:
+                    yield ErrorEvent(message=str(e)).to_sse()
+                    return
+                except Exception as e:
+                    yield ErrorEvent(message=f"{e}").to_sse()
+                    return
 
                 if not result or not result.get("messages"):
                     yield ErrorEvent(message="Failed to generate hedge fund decisions").to_sse()
                     return
 
-                # Send the final result
+                # Send the final result including raw response
                 final_data = CompleteEvent(
                     data={
                         "decisions": parse_hedge_fund_response(result.get("messages", [])[-1].content),
                         "analyst_signals": result.get("data", {}).get("analyst_signals", {}),
+                        "raw_response": result.get("messages", [])[-1].content,
+                        "messages": [
+                            {
+                                "role": getattr(m, "type", type(m).__name__),
+                                "name": getattr(m, "name", None),
+                                "content": getattr(m, "content", ""),
+                            }
+                            for m in result.get("messages", [])
+                        ],
                     }
                 )
                 yield final_data.to_sse()

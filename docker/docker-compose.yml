@@ -10,7 +10,7 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     ports:
-      - "11434:11434"
+      - "11435:11434"
     restart: unless-stopped
 
   hedge-fund:
@@ -20,9 +20,11 @@ services:
     image: ai-hedge-fund
     depends_on:
       - ollama
-    volumes:
-      - ../.env:/app/.env
-    command: python src/main.py --ticker AAPL,MSFT,NVDA
+    ports:
+      - "8000:8000"
+    command: uvicorn src.api_server:app --host 0.0.0.0 --port 8000
+    env_file:
+      - ../.env
     environment:
       - PYTHONUNBUFFERED=1
       - OLLAMA_BASE_URL=http://ollama:11434
