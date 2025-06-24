@@ -151,6 +151,13 @@ curl -X POST http://localhost:8000/trade \
   -d '{"tickers": ["AAPL","MSFT"], "analysts": ["michael_burry"], "model_name": "gpt-4o"}'
 ```
 
+If you plan to use local models with `model_provider` set to `Ollama`, make sure
+the model is already pulled into the Ollama container. For example:
+
+```bash
+docker exec ollama ollama pull gemma3:4b
+```
+
 Using Python with `requests`:
 
 ```python
