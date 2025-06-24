@@ -133,6 +133,41 @@ For any other ticker, you will need to set the `FINANCIAL_DATASETS_API_KEY` in t
 
 ## Usage
 
+### Running the API Server
+
+You can run the FastAPI service with Docker. This exposes the API on port `8000`.
+
+```bash
+# Build and start the containers
+cd docker
+docker compose up --build hedge-fund
+```
+
+Example request using `curl`:
+
+```bash
+curl -X POST http://localhost:8000/trade \
+  -H "Content-Type: application/json" \
+  -d '{"tickers": ["AAPL","MSFT"], "analysts": ["michael_burry"], "model_name": "gpt-4o"}'
+```
+
+Using Python with `requests`:
+
+```python
+import requests
+
+payload = {
+    "tickers": ["AAPL", "MSFT"],
+    "analysts": ["michael_burry"],
+    "model_name": "gpt-4o"
+}
+resp = requests.post("http://localhost:8000/trade", json=payload)
+print(resp.json())
+```
+
+The service relies on the same environment variables (`OPENAI_API_KEY`, `FINANCIAL_DATASETS_API_KEY`, etc.) used by the CLI.
+
+
 ### Running the Hedge Fund
 
 #### With Poetry

@@ -19,4 +19,4 @@ RUN poetry config virtualenvs.create false \
 COPY ./ /app/
 
 # Default command (will be overridden by Docker Compose)
-CMD ["python", "src/main.py"] 
+CMD ["uvicorn", "src.api_server:app", "--host", "0.0.0.0", "--port", "8000"]
