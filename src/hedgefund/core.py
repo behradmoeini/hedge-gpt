@@ -49,9 +49,24 @@ class HedgeFundRunner:
                     },
                 }
             )
+
+            final_message = final_state["messages"][-1]
+            raw_response = getattr(final_message, "content", str(final_message))
+
+            history = [
+                {
+                    "type": getattr(m, "type", type(m).__name__),
+                    "name": getattr(m, "name", None),
+                    "content": getattr(m, "content", ""),
+                }
+                for m in final_state.get("messages", [])
+            ]
+
             return {
-                "decisions": parse_hedge_fund_response(final_state["messages"][-1].content),
+                "decisions": parse_hedge_fund_response(raw_response),
                 "analyst_signals": final_state["data"]["analyst_signals"],
+                "raw_response": raw_response,
+                "messages": history,
             }
         finally:
             progress.stop()

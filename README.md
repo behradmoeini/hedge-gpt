@@ -165,6 +165,11 @@ resp = requests.post("http://localhost:8000/trade", json=payload)
 print(resp.json())
 ```
 
+The JSON response now also includes `raw_response` containing the exact
+portfolio manager output and `messages`, a history of the agent
+conversation. These can be saved and displayed to users for additional
+context.
+
 The service relies on the same environment variables (`OPENAI_API_KEY`, `FINANCIAL_DATASETS_API_KEY`, etc.) used by the CLI.
 
 
