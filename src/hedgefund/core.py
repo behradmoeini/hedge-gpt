@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 
 from langgraph.graph import END, StateGraph
 from langchain_core.messages import HumanMessage
+from src.utils.ollama import is_model_available
 
 from src.agents.portfolio_manager import portfolio_management_agent
 from src.agents.risk_manager import risk_management_agent
@@ -31,6 +32,12 @@ class HedgeFundRunner:
     ) -> dict:
         """Execute the trading workflow."""
         progress.start()
+
+        if model_provider.lower() == "ollama":
+            if not is_model_available(model_name):
+                raise RuntimeError(
+                    f"Ollama model '{model_name}' not found. Pull it with `ollama pull {model_name}`"
+                )
         try:
             final_state = self.app.invoke(
                 {
@@ -49,9 +56,24 @@ class HedgeFundRunner:
                     },
                 }
             )
+
+            final_message = final_state["messages"][-1]
+            raw_response = getattr(final_message, "content", str(final_message))
+
+            history = [
+                {
+                    "role": getattr(m, "type", type(m).__name__),
+                    "name": getattr(m, "name", None),
+                    "content": getattr(m, "content", ""),
+                }
+                for m in final_state.get("messages", [])
+            ]
+
             return {
-                "decisions": parse_hedge_fund_response(final_state["messages"][-1].content),
+                "decisions": parse_hedge_fund_response(raw_response),
                 "analyst_signals": final_state["data"]["analyst_signals"],
+                "raw_response": raw_response,
+                "messages": history,
             }
         finally:
             progress.stop()

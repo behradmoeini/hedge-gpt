@@ -151,6 +151,13 @@ curl -X POST http://localhost:8000/trade \
   -d '{"tickers": ["AAPL","MSFT"], "analysts": ["michael_burry"], "model_name": "gpt-4o"}'
 ```
 
+If you plan to use local models with `model_provider` set to `Ollama`, make sure
+the model is already pulled into the Ollama container. For example:
+
+```bash
+docker exec ollama ollama pull gemma3:4b
+```
+
 Using Python with `requests`:
 
 ```python
@@ -164,6 +171,12 @@ payload = {
 resp = requests.post("http://localhost:8000/trade", json=payload)
 print(resp.json())
 ```
+
+The JSON response now also includes `raw_response` containing the exact
+portfolio manager output and `messages`, a history of the agent
+conversation. Each message has a `role`, optional `name`, and
+`content`. These can be saved and displayed to users for additional
+context.
 
 The service relies on the same environment variables (`OPENAI_API_KEY`, `FINANCIAL_DATASETS_API_KEY`, etc.) used by the CLI.
 

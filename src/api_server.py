@@ -32,17 +32,20 @@ async def trade(req: TradeRequest):
     start_date, end_date = default_dates(req.start_date, req.end_date)
     portfolio = create_portfolio(req.initial_cash, req.margin_requirement, req.tickers)
     runner = HedgeFundRunner(req.analysts)
-    result = await run_in_threadpool(
-        runner.run,
-        req.tickers,
-        start_date,
-        end_date,
-        portfolio,
-        req.show_reasoning,
-        req.model_name,
-        req.model_provider,
-    )
-    return result
+    try:
+        result = await run_in_threadpool(
+            runner.run,
+            req.tickers,
+            start_date,
+            end_date,
+            portfolio,
+            req.show_reasoning,
+            req.model_name,
+            req.model_provider,
+        )
+        return result
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 class BacktestRequest(BaseModel):
