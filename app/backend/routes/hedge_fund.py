@@ -92,7 +92,7 @@ async def run_hedge_fund(request: HedgeFundRequest):
                         "raw_response": result.get("messages", [])[-1].content,
                         "messages": [
                             {
-                                "type": getattr(m, "type", type(m).__name__),
+                                "role": getattr(m, "type", type(m).__name__),
                                 "name": getattr(m, "name", None),
                                 "content": getattr(m, "content", ""),
                             }

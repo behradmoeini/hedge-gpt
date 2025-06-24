@@ -55,7 +55,7 @@ class HedgeFundRunner:
 
             history = [
                 {
-                    "type": getattr(m, "type", type(m).__name__),
+                    "role": getattr(m, "type", type(m).__name__),
                     "name": getattr(m, "name", None),
                     "content": getattr(m, "content", ""),
                 }
