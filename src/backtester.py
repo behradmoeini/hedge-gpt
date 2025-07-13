@@ -12,7 +12,7 @@ import itertools
 
 from src.llm.models import LLM_ORDER, OLLAMA_LLM_ORDER, get_model_info, ModelProvider
 from src.utils.analysts import ANALYST_ORDER
-from src.main import run_hedge_fund
+from src.hedgefund.core import HedgeFundRunner
 from src.tools.api import (
     get_company_news,
     get_price_data,
@@ -23,6 +23,31 @@ from src.tools.api import (
 from src.utils.display import print_backtest_results, format_backtest_row
 from typing_extensions import Callable
 from src.utils.ollama import ensure_ollama_and_model
+
+
+def run_hedge_fund(
+    *,
+    tickers: list[str],
+    start_date: str,
+    end_date: str,
+    portfolio: dict,
+    show_reasoning: bool = False,
+    model_name: str = "gpt-4o",
+    model_provider: str = "OpenAI",
+    selected_analysts: list[str] | None = None,
+) -> dict:
+    """Wrapper that instantiates ``HedgeFundRunner`` and executes ``run``."""
+
+    runner = HedgeFundRunner(selected_analysts)
+    return runner.run(
+        tickers=tickers,
+        start_date=start_date,
+        end_date=end_date,
+        portfolio=portfolio,
+        show_reasoning=show_reasoning,
+        model_name=model_name,
+        model_provider=model_provider,
+    )
 
 init(autoreset=True)
 
