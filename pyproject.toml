@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic_stock_predictor"
+version = "0.1.0"
+description = "Modular stock prediction with multiple agents and backtesting"
+requires-python = ">=3.10"
+dependencies = [
+    "openai",
+    "alpha_vantage",
+    "pandas",
+    "numpy",
+    "pyarrow",
+    "tqdm",
+    "ta",
+    "python-dotenv",
+    "matplotlib",
+]
+
+[tool.setuptools.packages.find]
+where = ["agentic_stock_predictor"]

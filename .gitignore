@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+*.eggs/
+*.pyo
+*.pyd
+*.pkl
+venv/
+.env
+*.parquet
+backtest/results/
+# Jupyter
+.ipynb_checkpoints/
+# Others
+.DS_Store
