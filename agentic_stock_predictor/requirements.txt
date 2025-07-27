@@ -1,0 +1,9 @@
+openai
+alpha_vantage
+pandas
+numpy
+pyarrow
+tqdm
+ta
+python-dotenv
+matplotlib
